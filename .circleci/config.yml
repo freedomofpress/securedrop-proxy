@@ -35,6 +35,12 @@ jobs:
             PKG_DIR=~/project make requirements
 
       - run:
+          name: Ensure that build-requirements.txt and requirements.txt are in sync.
+          command: |
+            cd ~/project
+            git diff-index --quiet HEAD
+
+      - run:
           name: Tag and make source tarball
           command: |
             cd ~/project
