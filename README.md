@@ -35,14 +35,14 @@ requirements. In the root of the project directory, run
 ```
 virtualenv .venv
 source .venv/bin/activate
-pip install --require-hashes -r dev-requirements.txt
+pip install --require-hashes -r requirements/dev-requirements.txt
 ```
 
 #### Update Dependencies
 
 If you're adding or updating a dependency, you need to:
 
-1. Modify either `dev-requirements.in` and `requirements.in` (depending on whether it is prod or dev only) and then run `make update-pip-dependencies`. This will generate `dev-requirements.txt` and `requirements.txt`.
+1. Modify either `dev-requirements.in` or `requirements.in` (depending on whether it is prod or dev only) and then run `make update-pip-dependencies`. This will generate `dev-requirements.txt` and `requirements.txt`.
 
 2. For building a debian package from this project, we use the requirements in
 `build-requirements.txt` which uses our pip mirror, i.e. the hashes in that file point to

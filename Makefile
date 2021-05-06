@@ -37,8 +37,8 @@ isort: ## Run isort for file formatting
 
 .PHONY: update-pip-requirements
 update-pip-requirements: ## Updates all Python requirements files via pip-compile.
-	pip-compile --allow-unsafe --generate-hashes --output-file dev-requirements.txt dev-requirements.in requirements.in
-	pip-compile --generate-hashes --output-file requirements.txt requirements.in
+	pip-compile --allow-unsafe --generate-hashes --output-file requirements/dev-requirements.txt requirements/dev-requirements.in requirements/requirements.in
+	pip-compile --generate-hashes --output-file requirements/requirements.txt requirements/requirements.in
 
 .PHONY: test
 test: clean .coverage ## Runs tests with coverage
