@@ -5,8 +5,7 @@ all: help
 
 .PHONY: bandit
 bandit: ## Run bandit with medium level excluding test-related folders
-	pip install --upgrade pip && \
-		pip install --upgrade bandit!=1.6.0 && \
+	pip install --upgrade bandit && \
 	bandit -ll --recursive securedrop_proxy
 
 .PHONY: safety
