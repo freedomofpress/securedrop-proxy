@@ -26,7 +26,7 @@ safety: ## Runs `safety check` to check python dependencies for vulnerabilities
 		done
 
 .PHONY: lint
-lint: isort-check black-check ## Run isort, black and flake8
+lint: check-isort check-black ## Run isort, black and flake8
 	@flake8 securedrop_proxy tests
 
 .PHONY: mypy
@@ -37,7 +37,7 @@ mypy: ## Run mypy static type checker
 black: ## Run black for file formatting
 	@black securedrop_proxy tests
 
-.PHONY: black-check
+.PHONY: check-black
 black-check: ## Check Python source code formatting with black
 	@black --check --diff securedrop_proxy tests
 
@@ -45,7 +45,7 @@ black-check: ## Check Python source code formatting with black
 isort: ## Run isort for file formatting
 	@isort securedrop_proxy/*.py tests/*.py
 
-.PHONY: isort-check
+.PHONY: check-isort
 isort-check: ## Check isort for file formatting
 	@isort --check-only --diff securedrop_proxy/*.py tests/*.py
 
@@ -83,7 +83,7 @@ browse-coverage: .coverage ## Generates and opens HTML coverage report
 	@xdg-open htmlcov/index.html 2>/dev/null || open htmlcov/index.html 2>/dev/null
 
 .PHONY: check
-check: clean lint test mypy safety bandit  ## Runs all tests and code checkers
+check: clean lint test mypy safety bandit  ## Runs full test suite
 
 .PHONY: clean
 clean:  ## Clean the workspace of generated resources
