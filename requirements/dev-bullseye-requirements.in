@@ -1,0 +1,17 @@
+black
+coverage
+flake8
+isort
+mccabe
+multidict
+mypy
+mypy-extensions
+pip-tools
+pycodestyle
+pyflakes
+types-PyYAML
+types-requests
+six
+vcrpy
+wrapt
+yarl
