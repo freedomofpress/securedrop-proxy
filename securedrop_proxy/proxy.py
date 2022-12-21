@@ -5,7 +5,7 @@ import subprocess
 import sys
 import tempfile
 import uuid
-from typing import IO, Dict, Optional
+from typing import IO, Dict, Optional  # noqa
 
 import furl  # type: ignore
 import requests
