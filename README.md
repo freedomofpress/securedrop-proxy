@@ -20,6 +20,40 @@ running [Qubes OS](https://qubes-os.org).
 
 ### How It Works
 
+```mermaid
+graph TD
+subgraph dom0
+
+qrexec((qrexec))
+
+subgraph sd-app
+stdin1>stdin] --req--- qrexec-client-vm(("qrexec-client-vm<br>securedrop-proxy<br>securedrop.Proxy")) --- stdout1>stdout]
+linkStyle 0 stroke:#F00
+linkStyle 1 stroke:#00F
+end
+qrexec-client-vm --> qrexec
+linkStyle 2 stroke:#F00
+qrexec --- stdin2
+linkStyle 3 stroke:#F00
+qrexec --> qrexec-client-vm
+linkStyle 4 stroke:#00F
+
+subgraph sd-proxy
+stdin2>stdin] --- proxy((proxy)) --res--- stdout2>stdout]
+linkStyle 5 stroke:#F00
+linkStyle 6 stroke:#00F
+end
+stdout2 --> qrexec
+linkStyle 7 stroke:#00F
+end
+```
+
+**Notes:**
+- The attachment-downloading flow is not depicted here.
+- With `--v2`, we will:
+    - stream attachments just like any other request; and
+    - have a download-progress signal.
+
 The proxy works by reading a JSON object from STDIN, generating an
 HTTP request from that JSON, making that request against the remote
 server, then writing a JSON object which represents the remote
