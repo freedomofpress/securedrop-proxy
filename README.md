@@ -1,6 +1,6 @@
 > By contributing to this project, you agree to abide by our [Code of Conduct](https://github.com/freedomofpress/.github/blob/main/CODE_OF_CONDUCT.md).
 
-## securedrop workstation proxy
+# securedrop workstation proxy
 
 [![CircleCI](https://circleci.com/gh/freedomofpress/securedrop-proxy.svg?style=svg)](https://circleci.com/gh/freedomofpress/securedrop-proxy)
 
@@ -18,7 +18,7 @@ rest of the Securedrop Workstation project. However, it is ready to be poked at
 and demonstrated. Feel free to explore and contribute! You'll need a machine
 running [Qubes OS](https://qubes-os.org).
 
-### How It Works
+## How It Works
 
 ```mermaid
 graph TD
@@ -61,12 +61,12 @@ server's response to STDOUT. For discussion about the shape of the
 request and response objects, see
 https://github.com/freedomofpress/securedrop-workstation/issues/107.
 
-#### Quick Start
+## Quick Start
 
 1. [Install Poetry](https://python-poetry.org/docs/#installing-with-the-official-installer)
 2. Run `make test` to verify the installation
 
-#### Managing Dependencies
+## Managing Dependencies
 
 We use Poetry to manage dependencies for this project.
 
@@ -109,7 +109,7 @@ PR in this repository.
 7. Add a detached signature (with the release key) for the source tarball.
 8. Submit the source tarball and signature via PR into this [repository](https://github.com/freedomofpress/securedrop-debian-packaging). This tarball will be used by the package builder.
 
-#### Configuration
+## Configuration
 
 The proxy script must be run with the path to its configuration file
 as its first argument. This repo includes an example configuration
@@ -122,7 +122,7 @@ following values:
 - `dev` - A boolean, where `True` indicates we're running in development mode, any other value (or not set) indicates we're running in production. See below for what that means.
 - `target_vm` - The name of the VM we should `qvm-move` non-JSON responses to. Must be set if dev is not True.
 
-#### dev vs prod
+### dev vs prod
 
 Configuration includes a "dev" attribute. At this point, the only
 difference between dev and production modes is how non-JSON responses
@@ -132,11 +132,11 @@ mode, the file is not moved off the VM, but is saved as a temporary
 file in `/tmp`. In both cases, the response written to STDOUT includes
 the name of the new file.
 
-#### Tests
+## Tests
 
 Unit tests can be run with `make test`.
 
-#### Example Commands
+## Example Commands
 
 The following commands can be used to demonstrate the proxy.
 
@@ -157,7 +157,7 @@ JSON. The proxy detects the malformed request, and prints an error message.
 
     $ cat examples/bad.json | ./sd-proxy.py ./config-example.yaml
 
-#### Qubes Integration
+## Qubes Integration
 
 Until we determine how we wish to package and install this script,
 demonstrating the proxy in a Qubes environment is a somewhat manual
