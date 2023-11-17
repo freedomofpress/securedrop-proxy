@@ -50,6 +50,8 @@ fn main() {
     // path query. This forces the path query to be part of the path and prevents
     // it from getting itself into the hostname.
     let url = Url::parse(&origin).unwrap();
+    // TODO: Consider just allowlisting a number of API paths instead of relying
+    // on the url library to join it properly and avoid type confusion
     let url = url.join(&incoming_request.path_query).unwrap();
 
     dbg!(&url);
