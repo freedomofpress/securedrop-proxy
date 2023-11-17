@@ -18,6 +18,25 @@ rest of the Securedrop Workstation project. However, it is ready to be poked at
 and demonstrated. Feel free to explore and contribute! You'll need a machine
 running [Qubes OS](https://qubes-os.org).
 
+## Security Properties
+
+### Isolation
+
+The SecureDrop Client/SDK can talk only to the proxy.  The proxy talks only to
+the (onion) origin it's configured with.
+
+**Mitigates against:** A compromised Client/VM tries to contact or exfiltrate
+data to an arbitrary origin.
+
+### Sanitization
+
+The SDK in "Qubes mode" talks JSON.  The proxy translates JSON to HTTP and back
+again.  (But it could just reconstruct a sanitized HTTP request and do the same
+for the response.)
+
+**Mitigates against:** A compromised Client/VM constructs a malicious HTTP
+request.  (The server returning a malicious HTTP response is already game over.)
+
 ## How It Works
 
 ```mermaid
