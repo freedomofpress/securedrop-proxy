@@ -124,7 +124,8 @@ fn main() {
                     // TODO: attempt to log underlying error
                     eprintln!(r#"{{"error": "unable to serialize error"}}"#)
                 }
-            }
+            };
+            std::process::exit(1);
         }
     }
 }
