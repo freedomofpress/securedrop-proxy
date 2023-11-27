@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{Result, bail};
 use reqwest::blocking::{Client, Response};
 use reqwest::header::HeaderMap;
 use reqwest::Method;
@@ -74,10 +74,13 @@ fn proxy() -> Result<()> {
     // We construct the URL by first parsing the origin and then appending the
     // path query. This forces the path query to be part of the path and prevents
     // it from getting itself into the hostname.
-    let url = Url::parse(&origin)?;
+    let origin = Url::parse(&origin)?;
     // TODO: Consider just allowlisting a number of API paths instead of relying
     // on the url library to join it properly and avoid type confusion
-    let url = url.join(&incoming_request.path_query)?;
+    let url = origin.join(&incoming_request.path_query)?;
+    if url.origin() != origin.origin() {
+        bail!{"request would escape configured origin"}
+    }
 
     let client = Client::new();
     let mut req =
