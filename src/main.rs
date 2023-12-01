@@ -1,9 +1,10 @@
-use anyhow::{Result, bail};
+use anyhow::{bail, Result};
 use reqwest::blocking::{Client, Response};
 use reqwest::header::HeaderMap;
 use reqwest::Method;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use std::process::ExitCode;
 use std::str::FromStr;
 use std::time::Duration;
 use std::{env, io};
@@ -79,7 +80,7 @@ fn proxy() -> Result<()> {
     // on the url library to join it properly and avoid type confusion
     let url = origin.join(&incoming_request.path_query)?;
     if url.origin() != origin.origin() {
-        bail!{"request would escape configured origin"}
+        bail! {"request would escape configured origin"}
     }
 
     let client = Client::new();
@@ -107,9 +108,9 @@ fn proxy() -> Result<()> {
     Ok(())
 }
 
-fn main() {
+fn main() -> ExitCode {
     match proxy() {
-        Ok(()) => {}
+        Ok(()) => ExitCode::SUCCESS,
         Err(err) => {
             // Try to serialize into our error format
             let resp = ErrorResponse {
@@ -128,7 +129,7 @@ fn main() {
                     eprintln!(r#"{{"error": "unable to serialize error"}}"#)
                 }
             };
-            std::process::exit(1);
+            ExitCode::FAILURE
         }
     }
 }
