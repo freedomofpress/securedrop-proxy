@@ -1,65 +1,11 @@
 ---
 common-steps:
-  - &install_poetry
-    run:
-      name: Install Poetry
-      command: |
-        set -e
-        source /etc/os-release
-        if [[ "$VERSION_CODENAME" == "bullseye" ]]; then
-            # Install Poetry via PyPI
-            apt-get update && apt-get install --yes --no-install-recommends python3-pip
-            pip install poetry==1.6.1
-        elif [[ "$VERSION_CODENAME" == "bookworm" ]]; then
-            # Install Poetry via system package
-            apt-get update && apt-get install --yes --no-install-recommends python3-poetry
-        else
-            echo "Unsupported Debian version: $VERSION_CODENAME"
-            exit 1
-        fi
-
-  - &install_testing_dependencies
-    run:
-      name: Install testing dependencies
-      command: |
-        apt-get install --yes --no-install-recommends git gnupg make
-        poetry install --no-ansi
-
   - &install_build_dependencies
     run:
       name: Install build dependencies
       command: |
         set -e
         apt-get update && apt-get install --yes git make sudo
-
-  - &run_unit_tests
-    run:
-      name: Install requirements and run unit tests
-      command: |
-        export PYTHONPATH=$PYTHONPATH:.  # so alembic can get to Base metadata
-        make test
-
-  - &run_lint
-    run:
-      name: Run lint, type checking, code formatting
-      command: |
-        make lint
-
-  - &check_security
-    run:
-      name: Run static analysis on source code to find security issues
-      command: |
-        set -e
-        poetry update bandit
-        make bandit
-
-  - &check_python_dependencies_for_vulnerabilities
-    run:
-      name: Check Python dependencies for known vulnerabilities
-      command: |
-        set -e
-        poetry update safety
-        make safety
 
   - &install_packaging_dependencies
     run:
@@ -111,62 +57,16 @@ jobs:
       - *verify_requirements
       - *build_debian_package
 
-  unit-test:
-    parameters: *parameters
-    docker: *docker
-    steps:
-      - checkout
-      - *install_poetry
-      - *install_testing_dependencies
-      - *run_unit_tests
-      - store_test_results:
-          path: test-results
-
-  lint:
-    parameters: *parameters
-    docker: *docker
-    steps:
-      - checkout
-      - *install_poetry
-      - *install_testing_dependencies
-      - *run_lint
-
-  check-security:
-    parameters: *parameters
-    docker: *docker
-    steps:
-      - checkout
-      - *install_poetry
-      - *install_testing_dependencies
-      - *check_security
-
-  check-python-security:
-    parameters: *parameters
-    docker: *docker
-    steps:
-      - checkout
-      - *install_poetry
-      - *install_testing_dependencies
-      - *check_python_dependencies_for_vulnerabilities
-
 
 workflows:
   securedrop_proxy_ci:
     jobs: &jobs
-      - unit-test:
+      - build:
           matrix: &matrix
             parameters:
               image:
                 - bullseye
                 - bookworm
-      - lint:
-          matrix: *matrix
-      - check-security:
-          matrix: *matrix
-      - check-python-security:
-          matrix: *matrix
-      - build:
-          matrix: *matrix
 
   nightly:
     triggers:

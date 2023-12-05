@@ -1,0 +1,25 @@
+name: CI
+on: [push, pull_request]
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    # Keep version in sync with rust-toolchain.toml
+    container: rust:1.74.0
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: |
+          rustup component add rustfmt
+          rustup component add clippy
+          apt-get update && apt-get install python3-poetry --yes
+          poetry install --no-ansi
+      - name: Lint and test code
+        run: |
+          make rust-lint
+          make rust-test
+          make test

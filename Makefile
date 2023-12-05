@@ -3,23 +3,8 @@
 .PHONY: all
 all: help
 
-.PHONY: bandit
-bandit: ## Run bandit with medium level excluding test-related folders
-	@echo "Running bandit security checks…"
-	@poetry run bandit -ll --recursive securedrop_proxy
-
-.PHONY: safety
-safety: ## Runs `safety check` to check python dependencies for vulnerabilities
-	@echo "Running safety against build requirements…"
-	@poetry run safety check --full-report -r build-requirements.txt
-
 .PHONY: lint
-lint: check-isort check-black mypy ## Run isort, black and flake8 and mypy
-	@poetry run flake8 securedrop_proxy tests
-
-.PHONY: mypy
-mypy: ## Run mypy static type checker
-	@poetry run mypy --ignore-missing-imports securedrop_proxy
+lint: rust-lint check-isort check-black ## Run Rust and Python linters/formatters
 
 .PHONY: black
 black: ## Run black for file formatting
@@ -42,26 +27,23 @@ check-isort: ## Check isort for file formatting
 	@poetry run isort --check-only --diff securedrop_proxy/*.py tests/*.py
 
 .PHONY: test
-test: clean .coverage ## Runs tests with coverage
-
-.coverage:
-	@poetry run coverage run --source securedrop_proxy -m unittest
-
-.PHONY: browse-coverage
-browse-coverage: .coverage ## Generates and opens HTML coverage report
-	@poetry run coverage html
-	@xdg-open htmlcov/index.html 2>/dev/null || open htmlcov/index.html 2>/dev/null
+test: ## Runs integration tests
+	@cargo build
+	@poetry run pytest
 
 .PHONY: check
-check: clean lint test mypy safety bandit  ## Runs all tests and code checkers
+check: lint rust-test test  ## Runs all tests and code checkers
 
-.PHONY: clean
-clean:  ## Clean the workspace of generated resources
-	@rm -rf .mypy_cache build dist *.egg-info .coverage .eggs docs/_build .pytest_cache lib htmlcov .cache && \
-		find . \( -name '*.py[co]' -o -name dropin.cache \) -delete && \
-		find . \( -name '*.bak' -o -name dropin.cache \) -delete && \
-		find . \( -name '*.tgz' -o -name dropin.cache \) -delete && \
-		find . -name __pycache__ -print0 | xargs -0 rm -rf
+.PHONY: rust-lint
+rust-lint: ## Lint Rust code
+	@echo "Linting Rust code..."
+	cargo fmt --check
+	cargo clippy
+
+.PHONY: rust-test
+rust-test: ## Run Rust tests
+	@echo "Running Rust tests..."
+	cargo test
 
 # Explanation of the below shell command should it ever break.
 # 1. Set the field separator to ": ##" and any make targets that might appear between : and ##

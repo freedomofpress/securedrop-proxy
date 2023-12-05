@@ -1,3 +1,5 @@
+#![deny(clippy::all)]
+
 use anyhow::{bail, Result};
 use reqwest::blocking::{Client, Response};
 use reqwest::header::HeaderMap;
