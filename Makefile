@@ -45,6 +45,13 @@ rust-test: ## Run Rust tests
 	@echo "Running Rust tests..."
 	cargo test
 
+.PHONY: rust-audit
+rust-audit: ## check dependencies in Cargo.lock
+	@echo "███ Running Rust dependency checks..."
+	@cargo install cargo-audit
+	@cargo audit
+	@echo
+
 # Explanation of the below shell command should it ever break.
 # 1. Set the field separator to ": ##" and any make targets that might appear between : and ##
 # 2. Use sed-like syntax to remove the make targets
